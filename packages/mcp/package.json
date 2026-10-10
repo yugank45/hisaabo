@@ -1,7 +1,7 @@
 {
   "name": "@hisaabo/mcp",
   "version": "0.9.0",
-  "description": "Hisaabo MCP server — expose Hisaabo tools (invoices, parties, items, reports) to LLMs via the Model Context Protocol.",
+  "description": "Hisaabo MCP server \u2014 expose Hisaabo tools (invoices, parties, items, reports) to LLMs via the Model Context Protocol.",
   "keywords": [
     "hisaabo",
     "mcp",
@@ -35,8 +35,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsx src/index.ts",
+    "build": "node init && tsup",
+    "dev": "node init && tsx src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "prepublishOnly": "pnpm build"
