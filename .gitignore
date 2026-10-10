@@ -1,8 +1,6 @@
 node_modules/
 dist/
 .turbo/
-.env
-.env.local
 .env.prod
 *.log
 
@@ -38,7 +36,6 @@ e2e/playwright-report/
 Thumbs.db
 
 # IDE
-.vscode/
 .idea/
 *.swp
 
@@ -60,3 +57,7 @@ test-results
 
 # Debug dumps
 *-dump.json
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
