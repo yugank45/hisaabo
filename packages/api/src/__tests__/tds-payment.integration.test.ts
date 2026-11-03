@@ -142,6 +142,62 @@ describe("TDS payment allocation", () => {
     expect(reversed?.amountPaid).toBe("0.00");
   });
 
+  it("rejects rate-mismatched TDS on create and update", async () => {
+    const invoice = await caller().invoice.create({
+      type: "sale",
+      partyId: world.party1.id,
+      lineItems: [{
+        itemId: world.item1.id,
+        itemName: "TDS validation item",
+        quantity: "1",
+        unitPrice: "100000.00",
+        taxPercent: "0",
+        discountPercent: "0",
+        conversionFactor: "1",
+      }],
+    });
+
+    await expect(caller().payment.create({
+      partyId: world.party1.id,
+      amount: "90001.00",
+      mode: "bank",
+      paymentDate: "2026-10-12T00:00:00.000Z",
+      allocations: [{
+        invoiceId: invoice.id,
+        amount: "100000.00",
+        tdsAmount: "9999.00",
+        tdsSectionCode: "1001",
+        tdsRate: "1.00",
+      }],
+    })).rejects.toThrow("TDS amount must approximately equal 1.00% of the gross allocation");
+
+    const payment = await caller().payment.create({
+      partyId: world.party1.id,
+      amount: "98000.00",
+      mode: "bank",
+      paymentDate: "2026-10-12T00:00:00.000Z",
+      allocations: [{
+        invoiceId: invoice.id,
+        amount: "100000.00",
+        tdsAmount: "2000.00",
+        tdsSectionCode: "1001",
+        tdsRate: "2.00",
+      }],
+    });
+
+    await expect(caller().payment.update({
+      id: payment.id,
+      amount: "90001.00",
+      allocations: [{
+        invoiceId: invoice.id,
+        amount: "100000.00",
+        tdsAmount: "9999.00",
+        tdsSectionCode: "1001",
+        tdsRate: "1.00",
+      }],
+    })).rejects.toThrow("TDS amount must approximately equal 1.00% of the gross allocation");
+  });
+
   it("rejects adding TDS to a supplier payment during update", async () => {
     const supplier = await createParty(db, world.business1.id, {
       name: "TDS Supplier",

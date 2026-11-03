@@ -60,7 +60,7 @@ const allocationSchema = objectSchema(
     tdsSectionCode: {
       type: "string",
       maxLength: 20,
-      description: "Active TDS section code for this deduction, such as '194C' or '194J'.",
+      description: "Active TDS registry code for this deduction, such as '1023' or '1027'. Use tds_section_list to confirm the tenant's configured sections.",
     },
     tdsRate: {
       type: "string",

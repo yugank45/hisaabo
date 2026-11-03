@@ -46,6 +46,16 @@ export function assertAllocationsFitPayment(allocations: TdsAllocation[], paymen
     if (money.compare(amount, "0") === 0 && (hasSection || hasRate)) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "TDS section and rate require a positive TDS amount" });
     }
+    if (money.compare(amount, "0") > 0 && hasRate) {
+      const expected = money.percent(alloc.amount, alloc.tdsRate!);
+      const difference = money.sub(amount, expected);
+      if (money.compare(difference, "-0.01") < 0 || money.compare(difference, "0.01") > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `TDS amount must approximately equal ${alloc.tdsRate}% of the gross allocation`,
+        });
+      }
+    }
   }
 }
 

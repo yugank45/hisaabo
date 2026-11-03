@@ -413,11 +413,11 @@ export const paymentAllocationSchema = z.object({
       });
     }
   } else {
-    if (value.tdsSectionCode || (value.tdsRate && money.compare(value.tdsRate, "0") > 0)) {
+    if (value.tdsSectionCode || value.tdsRate !== undefined) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["tdsSectionCode"],
-        message: "TDS section and rate require a positive TDS amount",
+        message: "TDS section and rate must be omitted when TDS amount is zero",
       });
     }
   }

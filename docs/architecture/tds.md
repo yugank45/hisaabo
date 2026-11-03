@@ -2,7 +2,7 @@
 
 ## Overview
 
-In Indian B2B commerce, under the Income Tax Act, 1961, customers (buyers) often deduct Tax Deducted at Source (TDS) before paying an invoice (e.g., Section 194C for contractor services, Section 194J for professional/technical fees).
+This Phase 1 workflow covers customer-deducted TDS on sales receipts (receivable-side TDS). The shared registry contains current numeric tax codes and legacy section identifiers for historical review; it does not establish the applicable rate or legal eligibility for an individual transaction.
 
 When a customer pays an invoice subject to TDS:
 1. The customer remits the **net cash amount** to the business seller.
@@ -16,14 +16,10 @@ When a customer pays an invoice subject to TDS:
 
 Hisaabo maintains a standard statutory tax code registry defined in `@hisaabo/shared` (`TDS_TAX_CODES`).
 
-### Statutory Sections Included:
-- **194C**: Payments to Contractors / Subcontractors (Individual/HUF: 1%, Company/Firm: 2%)
-- **194J(a)**: Fees for Technical Services (2%)
-- **194J(b)**: Fees for Professional Services or Royalty (10%)
-- **194H**: Commission or Brokerage (5%)
-- **194I(a)**: Rent on Plant and Machinery (2%)
-- **194I(b)**: Rent on Land, Building, or Furniture (10%)
-- **194Q**: Purchase of Goods (0.1%)
+### Codes and configuration:
+- Current registry entries use numeric codes such as **1023**, **1024**, **1026**, and **1027**. Use the tenant's active list (`tdsSection.list`) to choose a configured code.
+- Codes such as **194C** and **194J** are marked legacy and require review; they are not automatically mapped to current codes.
+- The current registry source is [Razorpay's tax-code reference](https://razorpay.com/docs/payroll/tax-verifications/tax-codes). Registry labels and effective dates do not determine a transaction's applicable rate.
 
 ### Tenant Provisioning & Lazy Seeding:
 - When a new tenant is created via `business.create`, all default statutory sections are auto-seeded into `tds_section_configs` with `active: true`.
@@ -44,15 +40,15 @@ $$\text{Net Cash} = \text{Gross Settlement} - \text{TDS Deducted}$$
 
 ### Example:
 - **Invoice Balance Due**: ₹10,000.00
-- **Customer deducts 10% TDS (194J)**: ₹1,000.00
+- **Example deduction amount**: ₹1,000.00 (illustrative only; the application does not determine this rate)
 - **Net Cash Received**: ₹9,000.00
 
 **Payload Submitted**:
 - `payment.amount`: `"9000.00"` (Net cash deposited)
 - `allocations[0].amount`: `"10000.00"` (Gross debt settled)
 - `allocations[0].tdsAmount`: `"1000.00"` (Tax withheld)
-- `allocations[0].tdsSectionCode`: `"194J"`
-- `allocations[0].tdsRate`: `"10.0"`
+- `allocations[0].tdsSectionCode`: `"1027"` (example current registry code; tenant configuration must include it)
+- `allocations[0].tdsRate`: `"10.0"` (stored client-supplied metadata, not independently validated against statutory rules)
 
 **Invoice Balance**:
 $$\text{New Amount Paid} = \text{Previous Amount Paid} + \text{Gross Settlement} = ₹10,000.00$$
@@ -104,6 +100,13 @@ In the customer statement of account:
 All TDS payments are strictly validated against repository invariants:
 1. `money.compare(tdsAmount, "0") > 0` requires `tdsSectionCode` to be present and `tdsRate > 0`.
 2. `money.compare(tdsAmount, grossAmount) <= 0`: TDS amount cannot exceed the gross invoice settlement.
-3. `money.compare(tdsAmount, "0") === 0`: TDS section code and rate must be omitted or undefined.
-4. Active section validation: `tdsSectionCode` must exist and be active in `tds_section_configs` or the statutory registry.
-5. All financial arithmetic uses `@hisaabo/shared` `money` module with 2-decimal-place rounding (`money.round2`).
+3. `money.compare(tdsAmount, "0") === 0`: TDS section code and rate must be omitted or undefined; even a zero rate is rejected as metadata without a deduction.
+4. Active section validation: `tdsSectionCode` must exist, be active, and be effective on the payment date in tenant-scoped `tds_section_configs`.
+5. `tdsAmount` must equal the gross allocation multiplied by `tdsRate`, rounded to paise; a one-paise tolerance permits normal decimal rounding.
+6. All financial arithmetic uses the `@hisaabo/shared` `money` module with 2-decimal-place rounding.
+
+The rate check uses the gross invoice allocation as its base. It does not determine the legally eligible base, thresholds, exemptions, surcharge, or the applicable statutory rate; do not treat the recorded rate as verified tax advice. Historical payments before a code's configured effective date need an explicitly configured historical section; the application does not guess a legacy mapping or rate.
+
+## 7. Supplier-side TDS scope
+
+Supplier/payable-side TDS is not implemented. TDS on customer receipts debits account **1600 – TDS Receivable**; a supplier deduction would instead create a TDS payable liability and requires separate supplier invoice deductions, settlement and remittance records, and reporting/reconciliation. Do not record supplier deductions through the customer-receipt TDS fields or account 1600.

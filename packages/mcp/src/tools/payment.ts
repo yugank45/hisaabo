@@ -61,7 +61,7 @@ export function registerPaymentTools(server: ToolServer, client: HisaaboClient) 
         tds_amount: z.string().regex(/^\d+(\.\d{1,2})?$/).optional()
           .describe("TDS amount deducted for this invoice."),
         tds_section_code: z.string().max(20).optional()
-          .describe("TDS section code (e.g. '194C', '194J')."),
+          .describe("Active TDS registry code (e.g. '1023', '1027'); confirm availability with tds_section.list."),
         tds_rate: z.string().regex(/^\d+(\.\d{1,4})?$/).optional()
           .describe("TDS percentage rate (e.g. '1.0' or '10.0')."),
       })).optional()
@@ -149,7 +149,7 @@ export function registerPaymentTools(server: ToolServer, client: HisaaboClient) 
         tds_amount: z.string().regex(/^\d+(\.\d{1,2})?$/).optional()
           .describe("TDS amount deducted for this invoice."),
         tds_section_code: z.string().max(20).optional()
-          .describe("TDS section code (e.g. '194C', '194J')."),
+          .describe("Active TDS registry code (e.g. '1023', '1027'); confirm availability with tds_section.list."),
         tds_rate: z.string().regex(/^\d+(\.\d{1,4})?$/).optional()
           .describe("TDS percentage rate (e.g. '1.0' or '10.0')."),
       })).optional()

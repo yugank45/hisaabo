@@ -6,7 +6,7 @@ describe("RecordPaymentPanel TDS financial allocation logic", () => {
     const invoiceBalance = "10000.00";
     const grossSettlement = invoiceBalance; // Gross invoice debt settled
     const tdsDeducted = "1000.00";
-    const tdsSectionCode = "194J";
+    const tdsSectionCode = "1027";
     const tdsRate = "10.0";
 
     // Net cash received = gross - TDS

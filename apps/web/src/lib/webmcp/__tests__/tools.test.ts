@@ -70,7 +70,7 @@ function makeClient() {
       create: { mutate: vi.fn().mockResolvedValue({ id: "exp-1" }) },
     },
     tdsSection: {
-      list: { query: vi.fn().mockResolvedValue([{ sectionCode: "194J", sectionLabel: "Professional services" }]) },
+      list: { query: vi.fn().mockResolvedValue([{ sectionCode: "1027", sectionLabel: "Professional services" }]) },
     },
   };
 }
@@ -730,7 +730,7 @@ describe("payment tools", () => {
           invoiceId: UUID_B,
           amount: "10000.00",
           tdsAmount: "1000.00",
-          tdsSectionCode: "194J",
+          tdsSectionCode: "1027",
           tdsRate: "10.0",
         }],
       },
@@ -741,7 +741,7 @@ describe("payment tools", () => {
       invoiceId: UUID_B,
       amount: "10000.00",
       tdsAmount: "1000.00",
-      tdsSectionCode: "194J",
+      tdsSectionCode: "1027",
       tdsRate: "10.0",
     }]);
   });
@@ -763,7 +763,7 @@ describe("payment tools", () => {
   it("tds_section_list discovers active sections through the tenant client", async () => {
     const out = await tool("tds_section_list").execute({}, ctx);
     expect(client.tdsSection.list.query).toHaveBeenCalledWith({});
-    expect(out).toEqual([{ sectionCode: "194J", sectionLabel: "Professional services" }]);
+    expect(out).toEqual([{ sectionCode: "1027", sectionLabel: "Professional services" }]);
   });
 
   it("payment_create rejects a missing amount or an unknown mode", async () => {

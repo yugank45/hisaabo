@@ -35,7 +35,7 @@ export function registerPaymentCommands(program: Command): void {
     .option("--date <date>", "Payment date")
     .option("--notes <text>", "Notes")
     .option("--tds-amount <amount>", "TDS deducted amount")
-    .option("--tds-section <code|id>", "TDS section code (e.g. 194C, 194J)")
+    .option("--tds-section <code|id>", "Active TDS registry code (e.g. 1023, 1027; use tds-section list)")
     .option("--tds-rate <rate>", "TDS percentage rate (e.g. 1.0, 10.0)")
     .option("-y, --yes", "Skip confirmation")
     .action(async (opts) => {
