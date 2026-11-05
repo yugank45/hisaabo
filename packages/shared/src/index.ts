@@ -34,6 +34,7 @@ export type {
 } from "./permissions.js";
 export { csvCell, csvRow, stripControlChars } from "./sanitize.js";
 export {
+  TDS_GOI_RATES_URL,
   TDS_TAX_CODE_SOURCE,
   TDS_TAX_CODES,
   classifyTdsTaxCode,

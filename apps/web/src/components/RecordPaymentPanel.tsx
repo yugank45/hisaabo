@@ -7,7 +7,7 @@ import { SlideOver } from "@/components/ui/SlideOver";
 import { PartyCombobox } from "@/components/ui/PartyCombobox";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { InputField, TextareaField } from "@/components/ui/FormField";
-import { calculateGatewayCharge, money } from "@hisaabo/shared";
+import { calculateGatewayCharge, money, TDS_GOI_RATES_URL } from "@hisaabo/shared";
 import type { GatewayChargeConfig } from "@hisaabo/shared";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -587,7 +587,23 @@ export function RecordPaymentPanel({
                 <InputField label="TDS Amount (₹)" type="number" min="0" step="0.01" value={tdsAmount} onChange={(e) => { setTdsAmount(e.target.value); setAmountOverridden(false); }} placeholder="0.00" />
                 <InputField label="TDS Rate (%)" type="number" min="0" max="100" step="0.01" value={tdsRate} onChange={(e) => setTdsRate(e.target.value)} placeholder="0.00" />
                 <div>
-                  <label className="label">TDS Section</label>
+                  <div className="flex items-center justify-between">
+                    <label className="label">TDS Section</label>
+                    <a
+                      href={TDS_GOI_RATES_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 hover:underline transition-colors pb-1"
+                      title="View Official Government of India TDS Rates"
+                    >
+                      <span>Rates (GoI)</span>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </a>
+                  </div>
                   <select className="input w-full" value={tdsSectionCode} onChange={(e) => setTdsSectionCode(e.target.value)}>
                     <option value="">Select section</option>
                     {tdsSections?.map((section) => <option key={section.id} value={section.sectionCode}>{section.sectionCode} - {section.sectionLabel}</option>)}

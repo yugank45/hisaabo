@@ -20,6 +20,7 @@ Hisaabo maintains a standard statutory tax code registry defined in `@hisaabo/sh
 - Current registry entries use numeric codes such as **1023**, **1024**, **1026**, and **1027**. Use the tenant's active list (`tdsSection.list`) to choose a configured code.
 - Codes such as **194C** and **194J** are marked legacy and require review; they are not automatically mapped to current codes.
 - The current registry source is [Razorpay's tax-code reference](https://razorpay.com/docs/payroll/tax-verifications/tax-codes). Registry labels and effective dates do not determine a transaction's applicable rate.
+- The official statutory reference for provisions and applicable rates is the [Income Tax Department (Government of India) TDS Rates](https://wm.incometaxindia.gov.in/w/tds-rates-1).
 
 ### Tenant Provisioning & Lazy Seeding:
 - When a new tenant is created via `business.create`, all default statutory sections are auto-seeded into `tds_section_configs` with `active: true`.

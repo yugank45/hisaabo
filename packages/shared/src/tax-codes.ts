@@ -7,6 +7,9 @@
  * section, but does not establish the complete financial-year validity period.
  */
 
+export const TDS_GOI_RATES_URL =
+  "https://wm.incometaxindia.gov.in/w/tds-rates-1";
+
 export const TDS_TAX_CODE_SOURCE =
   "https://razorpay.com/docs/payroll/tax-verifications/tax-codes";
 

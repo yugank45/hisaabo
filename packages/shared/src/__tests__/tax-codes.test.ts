@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   TDS_TAX_CODES,
+  TDS_GOI_RATES_URL,
   TDS_TAX_CODE_SOURCE,
   classifyTdsTaxCode,
   getTdsTaxCode,
@@ -107,5 +108,12 @@ describe("TDS tax-code registry", () => {
   it("rejects unknown codes without treating TCS codes as TDS", () => {
     expect(classifyTdsTaxCode("9999")).toMatchObject({ kind: "unknown" });
     expect(classifyTdsTaxCode("1068")).toMatchObject({ kind: "unknown" });
+  });
+});
+
+
+describe("TDS_GOI_RATES_URL", () => {
+  it("exports official Government of India TDS rates URL", () => {
+    expect(TDS_GOI_RATES_URL).toBe("https://wm.incometaxindia.gov.in/w/tds-rates-1");
   });
 });
